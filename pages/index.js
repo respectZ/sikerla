@@ -4,12 +4,14 @@ import styles from "../styles/Home.module.css";
 
 export default function Home() {
   return (
-    <div className={styles.container}>
-      <nav className="uk-navbar-container" uk-navbar="true">
+    <div>
+      <nav className="uk-navbar-container uk-navbar">
         <div className="uk-navbar-left">
           <ul className="uk-navbar-nav">
             <li className="uk-active">
-              <a href="#">Active</a>
+              <a href="#">
+                <span className="uk-icon" uk-icon="icon: home"></span>
+              </a>
             </li>
             <li>
               <a href="#">Parent</a>

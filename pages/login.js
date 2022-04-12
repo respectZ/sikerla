@@ -71,7 +71,11 @@ export default function Login({ user }) {
                   <fieldset className="uk-fieldset">
                     <div className="uk-margin">
                       <div className="uk-inline uk-width-1-1">
-                        <a className="uk-form-icon" href="#" uk-icon="user"></a>
+                        <a
+                          className="uk-form-icon uk-icon"
+                          href="#"
+                          uk-icon="user"
+                        ></a>
                         <input
                           className="uk-input"
                           type="text"
@@ -83,7 +87,11 @@ export default function Login({ user }) {
 
                     <div className="uk-margin">
                       <div className="uk-inline uk-width-1-1">
-                        <a className="uk-form-icon" href="#" uk-icon="lock"></a>
+                        <a
+                          className="uk-form-icon uk-icon"
+                          href="#"
+                          uk-icon="lock"
+                        ></a>
                         <input
                           className="uk-input"
                           type="password"

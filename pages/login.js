@@ -1,10 +1,34 @@
 import Head from "next/head";
 import ImageContainer from "../components/ImageContainer";
 import util from "../lib/util";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { withIronSessionSsr } from "iron-session/next";
+import { ironSessionConfig } from "../next.config";
+import { useRouter } from "next/router";
 
-export default function Login() {
+export const getServerSideProps = withIronSessionSsr(
+  async function getServerSideProps({ req }) {
+    return {
+      props: {
+        user: req.session.user ?? null,
+      },
+    };
+  },
+  ironSessionConfig
+);
+
+export default function Login({ user }) {
   const [errMsg, setErrMsg] = useState("");
+  const [authorized, setAuthorized] = useState(false);
+  const router = useRouter();
+
+  if (user && !authorized) setAuthorized(true);
+
+  useEffect(() => {
+    if (authorized) {
+      router.push("/");
+    }
+  });
 
   const loginHandler = async (event) => {
     event.preventDefault();
@@ -29,6 +53,7 @@ export default function Login() {
     if (result.error) {
       setErrMsg(result.message);
     } else {
+      setAuthorized(true);
       alert(`Selamat datang ${result.data[0]["nama"]}`);
       //   alert(result.data[0]["nama"]);
     }

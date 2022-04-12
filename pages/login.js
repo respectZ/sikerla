@@ -9,11 +9,11 @@ export default function Login() {
   const loginHandler = async (event) => {
     event.preventDefault();
     if (!event.target.email.value) {
-      setErrMsg("Mohon isi email.");
+      setErrMsg("Email harap diisi dengan lengkap.");
       return;
     }
     if (!event.target.password.value) {
-      setErrMsg("Mohon isi password.");
+      setErrMsg("Password harap diisi.");
     }
     const res = await fetch("api/login", {
       body: JSON.stringify({
@@ -33,6 +33,7 @@ export default function Login() {
       //   alert(result.data[0]["nama"]);
     }
   };
+
   return (
     <div>
       <div className="uk-cover-container uk-height-viewport">

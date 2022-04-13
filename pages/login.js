@@ -34,12 +34,15 @@ export default function Login({ user }) {
 
   const loginHandler = async (event) => {
     event.preventDefault();
-    if (!event.target.email.value) {
+    if (!util.validateEmail(event.target.email.value)) {
       setErrMsg("Email harap diisi dengan lengkap.");
+      UIkit.modal.alert("Email harap diisi dengan lengkap.");
       return;
     }
     if (!event.target.password.value) {
       setErrMsg("Password harap diisi.");
+      UIkit.modal.alert("Password harap diisi.");
+      return;
     }
     const res = await fetch("api/login", {
       body: JSON.stringify({
@@ -54,6 +57,7 @@ export default function Login({ user }) {
     const result = await res.json();
     if (result.error) {
       setErrMsg(result.message);
+      UIkit.modal.alert(result.message);
     } else {
       setAuthorized(true);
       alert(`Selamat datang ${result.data[0]["nama"]}`);
@@ -102,11 +106,6 @@ export default function Login({ user }) {
                           name="password"
                         />
                       </div>
-                    </div>
-                    <div className="uk-margin">
-                      <p className="uk-text-danger" id="err-msg">
-                        {errMsg}
-                      </p>
                     </div>
                     <div className="uk-text-center">
                       <button className="uk-button uk-button-primary">

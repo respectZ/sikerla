@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import { withIronSessionSsr } from "iron-session/next";
 import { ironSessionConfig } from "../next.config";
 import { useRouter } from "next/router";
+import UIkit from "uikit";
+import Navbar from "../components/Navbar";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -61,6 +63,7 @@ export default function Login({ user }) {
 
   return (
     <div>
+      <Navbar></Navbar>
       <div className="uk-cover-container uk-height-viewport">
         <div className="uk-background-fixed uk-background-center-center uk-background-norepeat uk-panel uk-flex uk-flex-center uk-flex-middle">
           <ImageContainer url="https://picsum.photos/2160/1440">
@@ -105,7 +108,7 @@ export default function Login({ user }) {
                         {errMsg}
                       </p>
                     </div>
-                    <div>
+                    <div className="uk-text-center">
                       <button className="uk-button uk-button-primary">
                         Login
                       </button>

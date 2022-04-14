@@ -24,7 +24,7 @@ export default function HomePage_Navbar(props) {
             <NavButton
               icon="users"
               subtitle="Akun Pemilik"
-              href="/perkiraan_cuaca"
+              href="/profil/pemilik"
             ></NavButton>
             <NavButton
               icon="cloud-upload"

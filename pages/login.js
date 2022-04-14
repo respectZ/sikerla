@@ -28,7 +28,7 @@ export default function Login({ user }) {
 
   useEffect(() => {
     if (authorized) {
-      router.push("/");
+      router.push("/homepage");
     }
   });
 

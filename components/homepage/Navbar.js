@@ -14,7 +14,7 @@ export default function HomePage_Navbar(props) {
             <NavButton
               icon="home"
               subtitle="Profil Perusahaan"
-              href="/perkiraan_cuaca"
+              href="/profil/perusahaan"
             ></NavButton>
             <NavButton
               icon="users"

@@ -47,6 +47,7 @@ export default function ProfilPemilik({ user }) {
     setIsEditing(true);
   }
   function batal(event) {
+    event.preventDefault();
     setIsEditing(false);
     setOwner({});
   }
@@ -110,21 +111,6 @@ export default function ProfilPemilik({ user }) {
         </div>
         <div className="uk-background-muted uk-padding uk-panel uk-margin-large-top">
           <form className="uk-form-stacked" onSubmit={simpan}>
-            {!isEditing ? (
-              <button
-                className="uk-button uk-button-primary"
-                onClick={editHandler}
-              >
-                Edit Profil
-              </button>
-            ) : (
-              <>
-                <button className="uk-button uk-button-danger" onClick={batal}>
-                  Batal
-                </button>
-                <button className="uk-button uk-button-primary">Simpan</button>
-              </>
-            )}
             <div className="uk-margin">
               <label className="uk-form-label" htmlFor="nama">
                 Nama
@@ -198,6 +184,23 @@ export default function ProfilPemilik({ user }) {
                 />
               </div>
             </div>
+            {!isEditing ? (
+              <div className="uk-text-right">
+                <button
+                  className="uk-button uk-button-primary"
+                  onClick={editHandler}
+                >
+                  Edit Profil
+                </button>
+              </div>
+            ) : (
+              <div className="uk-text-right">
+                <button className="uk-button uk-button-danger" onClick={batal}>
+                  Batal
+                </button>
+                <button className="uk-button uk-button-primary">Simpan</button>
+              </div>
+            )}
           </form>
         </div>
       </div>

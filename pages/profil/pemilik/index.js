@@ -21,7 +21,7 @@ export const getServerSideProps = withIronSessionSsr(
   ironSessionConfig
 );
 
-export default function HomePage({ user }) {
+export default function ProfilPemilik({ user }) {
   const router = useRouter();
   const fetcher = (url) => fetch(url).then((res) => res.json());
   const [owner, setOwner] = useState({});

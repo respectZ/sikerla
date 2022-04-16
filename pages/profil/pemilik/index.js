@@ -37,6 +37,7 @@ export default function ProfilPemilik({ user }) {
       data?.forEach((element) => {
         if (element.role == "Pemilik") {
           setOwner(element);
+          console.log(element);
           return;
         }
       });
@@ -94,6 +95,10 @@ export default function ProfilPemilik({ user }) {
           email: event.target.email.value,
           nomor_hp: event.target.nomor_hp.value,
           alamat: event.target.alamat.value,
+          password:
+            event.target.password.value != null
+              ? util.hash(event.target.password.value)
+              : owner.password,
         },
       }),
       headers: {
@@ -179,6 +184,22 @@ export default function ProfilPemilik({ user }) {
                   onChange={(e) =>
                     setOwner({ ...owner, email: e.target.value })
                   }
+                />
+              </div>
+            </div>
+
+            <div className="uk-margin">
+              <label className="uk-form-label" htmlFor="password">
+                Password
+              </label>
+              <div className="uk-form-controls">
+                <input
+                  className="uk-input"
+                  id="password"
+                  name="password"
+                  type="password"
+                  disabled={!isEditing}
+                  placeholder="Biarkan kosong bila tidak mengganti password."
                 />
               </div>
             </div>

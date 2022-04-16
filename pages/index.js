@@ -21,7 +21,11 @@ export default function Home() {
               </div>
 
               <div className="uk-text-center">
-                <button className="uk-button uk-button-primary">Tentang</button>
+                <a href="/profil/perusahaan">
+                  <button className="uk-button uk-button-primary">
+                    Tentang
+                  </button>
+                </a>
               </div>
             </div>
           </ImageContainer>

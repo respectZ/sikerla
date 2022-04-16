@@ -23,6 +23,31 @@ function Navbar(props) {
           </li>
         </ul>
       </div>
+      <div className="uk-navbar-right">
+        <ul className="uk-navbar-nav">
+          <li className="uk-active">
+            {props.auth ? (
+              <>
+                <a href="/homepage">
+                  <div className="uk-text-center">
+                    <span className="uk-icon" uk-icon="icon: home;"></span>
+                    <div className="uk-navbar-subtitle">Dashboard</div>
+                  </div>
+                </a>
+              </>
+            ) : (
+              <>
+                <a href="/login">
+                  <div className="uk-text-center">
+                    <span className="uk-icon" uk-icon="icon: user;"></span>
+                    <div className="uk-navbar-subtitle">Login</div>
+                  </div>
+                </a>
+              </>
+            )}
+          </li>
+        </ul>
+      </div>
     </nav>
   );
 }

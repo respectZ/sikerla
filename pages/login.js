@@ -57,10 +57,13 @@ export default function Login({ user }) {
     const result = await res.json();
     if (result.error) {
       setErrMsg(result.message);
-      UIkit.modal.alert(result.message);
+      UIkit.notification({
+        message: result.message,
+        pos: "bottom-center",
+        status: "danger",
+      });
     } else {
       setAuthorized(true);
-      alert(`Selamat datang ${result.data[0]["nama"]}`);
       //   alert(result.data[0]["nama"]);
     }
   };

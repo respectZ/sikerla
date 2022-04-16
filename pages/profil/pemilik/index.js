@@ -87,12 +87,13 @@ export default function ProfilPemilik({ user }) {
       method: "POST",
     });
     const result = await res.json();
-    if (result.err) {
+    if (result.error) {
       UIkit.notification({
         message: result.message,
         pos: "bottom-center",
         status: "danger",
       });
+      setOwner({});
     } else {
       UIkit.notification({
         message: "Data berhasil diubah.",

@@ -41,6 +41,12 @@ export default function ProfilPerusahaan({ user }) {
   });
 
   // functions
+  function inputNumberOnly(event) {
+    event.target.value = event.target.value
+      .replace(/[^0-9.]/g, "")
+      .replace(/(\..*?)\..*/g, "$1");
+  }
+
   function handleEdit(event) {
     event.preventDefault();
     setIsEditing(true);
@@ -184,6 +190,8 @@ export default function ProfilPerusahaan({ user }) {
                     id="nomor_hp"
                     name="nomor_hp"
                     type="text"
+                    onInput={(e) => inputNumberOnly(e)}
+                    maxLength={13}
                     disabled={!isEditing}
                     value={perusahaan?.nomor_hp ?? ""}
                     onChange={(e) =>

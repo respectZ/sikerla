@@ -42,6 +42,12 @@ export default function ProfilPemilik({ user }) {
       });
   });
 
+  function inputNumberOnly(event) {
+    event.target.value = event.target.value
+      .replace(/[^0-9.]/g, "")
+      .replace(/(\..*?)\..*/g, "$1");
+  }
+
   function editHandler(event) {
     event.preventDefault();
     setIsEditing(true);
@@ -64,6 +70,15 @@ export default function ProfilPemilik({ user }) {
     ) {
       UIkit.notification({
         message: "Data anda belum lengkap. Harap isi kembali",
+        pos: "bottom-center",
+        status: "danger",
+      });
+      setOwner({});
+      return;
+    }
+    if (!util.isNumeric(event.target.nomor_hp.value)) {
+      UIkit.notification({
+        message: "Nomor HP tidak valid.",
         pos: "bottom-center",
         status: "danger",
       });
@@ -138,7 +153,8 @@ export default function ProfilPemilik({ user }) {
                   className="uk-input"
                   id="nomor_hp"
                   name="nomor_hp"
-                  type="text"
+                  maxLength={13}
+                  onInput={(e) => inputNumberOnly(e)}
                   disabled={!isEditing}
                   value={owner?.nomor_hp ?? ""}
                   onChange={(e) =>

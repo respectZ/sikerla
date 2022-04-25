@@ -9,7 +9,6 @@ import useSWR from "swr";
 
 import { withIronSessionSsr } from "iron-session/next";
 import { ironSessionConfig } from "../next.config";
-import ModalPortal from "../components/Modal";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {

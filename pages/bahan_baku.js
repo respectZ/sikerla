@@ -287,7 +287,7 @@ export default function BahanBakuPage({ user }) {
           >
             <thead>
               <tr>
-                <th className="uk-table-shrink">Nama</th>
+                <th className="uk-width-small">Nama</th>
                 <th className="uk-table-shrink">Jumlah</th>
                 <th className="uk-table-medium">Waktu Ditambahkan</th>
                 <th className="uk-table-expand">Ditambahkan Oleh</th>

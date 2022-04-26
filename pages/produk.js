@@ -71,6 +71,7 @@ export default function ProdukPage({ user }) {
   }
 
   // form handler
+  // edit
   function editHandler(event, data) {
     event.preventDefault();
     setIsEditing(true);
@@ -122,6 +123,8 @@ export default function ProdukPage({ user }) {
       });
     }
   }
+
+  // add
   function addHandler(event) {
     event.preventDefault();
     setIsAdding(true);
@@ -175,6 +178,43 @@ export default function ProdukPage({ user }) {
     }
   }
 
+  // delete
+  async function deleteHandler(event, data) {
+    UIkit.modal
+      .confirm(`Apakah anda ingin menghapus ${data.nama} x ${data.jumlah} ?`)
+      .then(
+        async function () {
+          const res = await fetch("../api/produk/delete", {
+            body: JSON.stringify({
+              id: data.id,
+            }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+            method: "POST",
+          });
+          const result = await res.json();
+          if (result.error) {
+            UIkit.notification({
+              message: result.message,
+              pos: "bottom-center",
+              status: "danger",
+            });
+          } else {
+            setIsAdding(false);
+            getProduk(document.getElementById("tanggal").value);
+            UIkit.modal(document.getElementById("modal-produk")).hide();
+            UIkit.notification({
+              message: "Data berhasil dihapus.",
+              pos: "bottom-center",
+              status: "success",
+            });
+          }
+        },
+        function () {}
+      );
+  }
+
   return (
     <div>
       <HomePage_Navbar name={user.name}></HomePage_Navbar>
@@ -223,6 +263,7 @@ export default function ProdukPage({ user }) {
                       <button
                         className="uk-button uk-button-danger"
                         type="button"
+                        onClick={(e) => deleteHandler(e, d)}
                       >
                         Hapus
                       </button>

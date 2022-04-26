@@ -227,6 +227,23 @@ export default function ProdukPage({ user }) {
       );
   }
 
+  // search
+  function search(value) {
+    let table = document.getElementById("table");
+    let tr = table.getElementsByTagName("tr");
+    for (let i = 0; i < tr.length; i++) {
+      const td = tr[i].getElementsByTagName("td")[0];
+      if (td) {
+        let d = td.textContent || td.innerText;
+        if (d.toLowerCase().indexOf(value.toLowerCase()) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+
   return (
     <div>
       <HomePage_Navbar name={user.name}></HomePage_Navbar>
@@ -234,18 +251,40 @@ export default function ProdukPage({ user }) {
         <div className="uk-background-secondary uk-light uk-padding uk-panel uk-width-1-2">
           <p className="uk-h2">Data Produk</p>
         </div>
-        <div className="uk-float-right">
-          <input
-            className="uk-input"
-            id="tanggal"
-            name="tanggal"
-            type="date"
-            defaultValue={util.formatDateClient(util.getDate())}
-            onChange={(e) => getProduk(e.target.value)}
-          />
+        <div
+          uk-grid="true"
+          className="uk-margin-top uk-margin-top uk-grid uk-grid-stack"
+        >
+          <div className="uk-width-expand">
+            <div class="uk-inline uk-width-1-1">
+              <span class="uk-form-icon" uk-icon="icon: search"></span>
+              <input
+                class="uk-input"
+                id="search"
+                name="search"
+                type="text"
+                maxLength="50"
+                placeholder="Cari..."
+                onChange={(e) => search(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="uk-width-1-5">
+            <input
+              className="uk-input"
+              id="tanggal"
+              name="tanggal"
+              type="date"
+              defaultValue={util.formatDateClient(util.getDate())}
+              onChange={(e) => getProduk(e.target.value)}
+            />
+          </div>
         </div>
-        <div className="uk-background-muted uk-padding uk-panel uk-margin-large-top">
-          <table className="uk-table uk-table-middle uk-table-divider">
+        <div className="uk-background-muted uk-padding uk-panel uk-margin-top">
+          <table
+            className="uk-table uk-table-middle uk-table-divider"
+            id="table"
+          >
             <thead>
               <tr>
                 <th className="uk-table-shrink">Nama</th>

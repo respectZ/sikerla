@@ -91,6 +91,18 @@ export default function BahanBakuPage({ user }) {
   async function editSimpan(event) {
     event.preventDefault();
 
+    if (
+      util.isEmptyOrSpaces(formProduk.nama) ||
+      parseInt(formProduk.jumlah) <= 0
+    ) {
+      UIkit.notification({
+        message: "Data tidak valid",
+        pos: "bottom-center",
+        status: "danger",
+      });
+      return;
+    }
+
     const res = await fetch("../api/bahan_baku/update", {
       body: JSON.stringify({
         id: formProduk.id,

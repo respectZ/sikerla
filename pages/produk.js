@@ -90,7 +90,19 @@ export default function ProdukPage({ user }) {
   }
   async function editSimpan(event) {
     event.preventDefault();
-    console.log(formatDateToServer(formProduk.waktu));
+
+    if (
+      util.isEmptyOrSpaces(formProduk.nama) ||
+      parseInt(formProduk.jumlah) <= 0
+    ) {
+      UIkit.notification({
+        message: "Data tidak valid",
+        pos: "bottom-center",
+        status: "danger",
+      });
+      return;
+    }
+
     const res = await fetch("../api/produk/update", {
       body: JSON.stringify({
         id: formProduk.id,

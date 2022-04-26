@@ -5,7 +5,6 @@ import UIkit from "uikit";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import useSWR from "swr";
 
 import { withIronSessionSsr } from "iron-session/next";
 import { ironSessionConfig } from "../next.config";
@@ -43,6 +42,7 @@ export default function ProdukPage({ user }) {
     }
   });
 
+  // utils
   function inputNumberOnly(event) {
     event.target.value = event.target.value
       .replace(/[^0-9.]/g, "")
@@ -52,6 +52,25 @@ export default function ProdukPage({ user }) {
     _setDate(date);
   }
 
+  function getDateTime() {
+    let tanggal = document.getElementById("tanggal").value;
+    let today = new Date();
+    today.setHours(today.getHours() + 7);
+    tanggal = tanggal + "T" + today.toISOString().split("T")[1].split(".")[0];
+    return tanggal;
+  }
+
+  function formatDateToServer(date) {
+    return date.replace("T", " ");
+  }
+
+  function formatDateToClient(date) {
+    date = new Date(date);
+    date.setHours(date.getHours() + 7);
+    return date.toISOString().split(".")[0];
+  }
+
+  // form handler
   function editHandler(event, data) {
     event.preventDefault();
     setIsEditing(true);
@@ -77,6 +96,7 @@ export default function ProdukPage({ user }) {
         data: {
           nama: formProduk.nama,
           jumlah: formProduk.jumlah,
+          waktu: formatDateToServer(formProduk.waktu),
         },
       }),
       headers: {
@@ -105,7 +125,9 @@ export default function ProdukPage({ user }) {
   function addHandler(event) {
     event.preventDefault();
     setIsAdding(true);
-    setFormProduk({});
+    setFormProduk({
+      waktu: getDateTime(),
+    });
     document.getElementById("modal-produk").classList.add("uk-open");
     document
       .getElementById("modal-produk")
@@ -119,8 +141,38 @@ export default function ProdukPage({ user }) {
   }
   async function addSimpan(event) {
     event.preventDefault();
-    setIsAdding(false);
-    UIkit.modal(document.getElementById("modal-produk")).hide();
+
+    const res = await fetch("../api/produk/insert", {
+      body: JSON.stringify({
+        data: {
+          nama: formProduk.nama,
+          jumlah: formProduk.jumlah,
+          user: user.id,
+          waktu: formatDateToServer(formProduk.waktu),
+        },
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+    });
+    const result = await res.json();
+    if (result.error) {
+      UIkit.notification({
+        message: result.message,
+        pos: "bottom-center",
+        status: "danger",
+      });
+    } else {
+      setIsAdding(false);
+      getProduk(document.getElementById("tanggal").value);
+      UIkit.modal(document.getElementById("modal-produk")).hide();
+      UIkit.notification({
+        message: "Data berhasil ditambahkan.",
+        pos: "bottom-center",
+        status: "success",
+      });
+    }
   }
 
   return (
@@ -157,7 +209,7 @@ export default function ProdukPage({ user }) {
                   <tr key={d.id}>
                     <td>{d.nama}</td>
                     <td>{d.jumlah}</td>
-                    <td>{new Date(d.waktu).toLocaleString()}</td>
+                    <td>{new Date(d.waktu).toTimeString().split(" ")[0]}</td>
                     <td>{d.user}</td>
                     <td>
                       <button
@@ -231,6 +283,29 @@ export default function ProdukPage({ user }) {
                   value={formProduk.jumlah ?? ""}
                   onChange={(e) =>
                     setFormProduk({ ...formProduk, jumlah: e.target.value })
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="uk-margin">
+              <label className="uk-form-label" htmlFor="waktu">
+                Waktu &amp; Tanggal
+              </label>
+              <div className="uk-form-controls">
+                <input
+                  className="uk-input"
+                  id="waktu"
+                  name="waktu"
+                  type="datetime-local"
+                  value={
+                    formProduk.waktu ? formatDateToClient(formProduk.waktu) : ""
+                  }
+                  onChange={(e) =>
+                    setFormProduk({
+                      ...formProduk,
+                      waktu: e.target.value,
+                    })
                   }
                 />
               </div>

@@ -61,7 +61,7 @@ export default function ProdukPage({ user }) {
   }
 
   function formatDateToServer(date) {
-    return date.replace("T", " ");
+    return date.replace("T", " ").split(".")[0];
   }
 
   function formatDateToClient(date) {
@@ -90,7 +90,7 @@ export default function ProdukPage({ user }) {
   }
   async function editSimpan(event) {
     event.preventDefault();
-
+    console.log(formatDateToServer(formProduk.waktu));
     const res = await fetch("../api/produk/update", {
       body: JSON.stringify({
         id: formProduk.id,

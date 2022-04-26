@@ -92,6 +92,8 @@ export default function BahanBakuPage({ user }) {
     event.preventDefault();
 
     if (
+      formProduk.nama == null ||
+      formProduk.jumlah == null ||
       util.isEmptyOrSpaces(formProduk.nama) ||
       parseInt(formProduk.jumlah) <= 0
     ) {
@@ -156,6 +158,20 @@ export default function BahanBakuPage({ user }) {
   }
   async function addSimpan(event) {
     event.preventDefault();
+
+    if (
+      formProduk.nama == null ||
+      formProduk.jumlah == null ||
+      util.isEmptyOrSpaces(formProduk.nama) ||
+      parseInt(formProduk.jumlah) <= 0
+    ) {
+      UIkit.notification({
+        message: "Data tidak valid",
+        pos: "bottom-center",
+        status: "danger",
+      });
+      return;
+    }
 
     const res = await fetch("../api/bahan_baku/insert", {
       body: JSON.stringify({

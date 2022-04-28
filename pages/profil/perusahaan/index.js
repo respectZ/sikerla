@@ -109,7 +109,7 @@ export default function ProfilPerusahaan({ user }) {
   return (
     <div>
       {isAuthorized ? (
-        <HomePage_Navbar name={user.name}></HomePage_Navbar>
+        <HomePage_Navbar name={user.name} admin={user.admin}></HomePage_Navbar>
       ) : (
         <>
           <Navbar></Navbar>

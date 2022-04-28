@@ -126,7 +126,7 @@ export default function PerkiraanCuaca({ user, weatherData }) {
 
   return (
     <div>
-      <HomePage_Navbar name={user.name}></HomePage_Navbar>
+      <HomePage_Navbar name={user.name} admin={user.admin}></HomePage_Navbar>
       <div className="uk-cover-container uk-margin-large-left uk-margin-large-right uk-margin-large-top">
         <div>
           <h1 className="uk-text-lead">Perkiraan Cuaca di Sigumuru</h1>

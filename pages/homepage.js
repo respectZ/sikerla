@@ -35,7 +35,7 @@ export default function HomePage({ user, weatherData }) {
 
   return (
     <div>
-      <HomePage_Navbar name={user.name}></HomePage_Navbar>
+      <HomePage_Navbar name={user.name} admin={user.admin}></HomePage_Navbar>
       <div className="uk-cover-container uk-margin-large-left uk-margin-large-right uk-margin-large-top">
         <div className="uk-background-secondary uk-light uk-padding uk-panel uk-width-1-2">
           <p className="uk-h2">Selamat datang, {user.name}</p>

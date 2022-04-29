@@ -36,6 +36,15 @@ export default function HomePage_Navbar(props) {
                 Beranda
               </a>
             </li>
+            <li className="uk-active">
+              <a href="/perkiraan_cuaca">
+                <span
+                  className="uk-margin-small-right"
+                  uk-icon="icon: cloud-upload"
+                ></span>
+                Perkiraan Cuaca
+              </a>
+            </li>
             <li className="uk-nav-header">Manajemen Data</li>
             <li className="uk-parent">
               <ul className="uk-nav-sub">

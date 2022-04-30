@@ -70,7 +70,7 @@ export default function HomePage_Navbar(props) {
             </li>
             <li className="uk-nav-header">Manajemen Profil</li>
             <li>
-              <a href="/profil_perusahaan">
+              <a href="/profil/perusahaan">
                 <span
                   className="uk-margin-small-right"
                   uk-icon="icon: tag"

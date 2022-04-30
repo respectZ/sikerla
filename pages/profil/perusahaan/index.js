@@ -123,12 +123,12 @@ export default function ProfilPerusahaan({ user }) {
         }}
       >
         <div className="uk-cover-container uk-margin-large-left uk-margin-large-right uk-margin-large-top">
-          <div className="uk-background-secondary uk-light uk-padding uk-panel uk-width-1-2 uk-margin-large-top">
+          <div className="uk-background-secondary uk-light uk-padding uk-panel uk-width-1-2 uk-margin-large-top uk-border-rounded">
             <p className="uk-h2">Profil UD Salacca</p>
           </div>
           <div className="uk-background-muted uk-panel uk-margin-large-top"></div>
           <form className="uk-form-stacked" onSubmit={handleSimpan}>
-            <div className="uk-margin uk-background-muted uk-padding">
+            <div className="uk-margin uk-background-muted uk-padding uk-border-rounded">
               <h1 className="uk-h1">UD Salacca</h1>
               <div className="uk-margin uk-background-muted">
                 <div className="uk-form-controls">
@@ -228,7 +228,7 @@ export default function ProfilPerusahaan({ user }) {
               {isAuthorized && !isEditing ? (
                 <div className="uk-text-right">
                   <button
-                    className="uk-button uk-button-primary"
+                    className="uk-button uk-button-primary uk-border-rounded"
                     onClick={handleEdit}
                   >
                     Edit

@@ -127,10 +127,10 @@ export default function ProfilPemilik({ user }) {
     <div>
       <HomePage_Navbar name={user.name} admin={user.admin}></HomePage_Navbar>
       <div className="uk-cover-container uk-margin-large-left uk-margin-large-right uk-margin-large-top">
-        <div className="uk-background-secondary uk-light uk-padding uk-panel uk-width-1-2">
+        <div className="uk-background-secondary uk-light uk-padding uk-panel uk-width-1-2 uk-border-rounded">
           <p className="uk-h2">Profil Pemilik</p>
         </div>
-        <div className="uk-background-muted uk-padding uk-panel uk-margin-large-top">
+        <div className="uk-background-muted uk-padding uk-panel uk-margin-large-top uk-border-rounded">
           <form className="uk-form-stacked" onSubmit={simpan}>
             <div className="uk-margin">
               <label className="uk-form-label" htmlFor="nama">
@@ -225,7 +225,7 @@ export default function ProfilPemilik({ user }) {
             {!isEditing ? (
               <div className="uk-text-right">
                 <button
-                  className="uk-button uk-button-primary"
+                  className="uk-button uk-button-primary uk-border-rounded"
                   onClick={editHandler}
                 >
                   Edit Profil

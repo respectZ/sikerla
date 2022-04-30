@@ -75,7 +75,7 @@ export default function Login({ user }) {
         <div className="uk-background-fixed uk-background-center-center uk-background-norepeat uk-panel uk-flex uk-flex-center uk-flex-middle">
           <ImageContainer url="https://picsum.photos/2160/1440">
             <div className="uk-container">
-              <div className="uk-card uk-card-default uk-card-body uk-width-1-1">
+              <div className="uk-card uk-card-default uk-card-body uk-width-1-1 uk-border-rounded">
                 <h3 className="uk-card-title">Login</h3>
                 <form onSubmit={loginHandler}>
                   <fieldset className="uk-fieldset">

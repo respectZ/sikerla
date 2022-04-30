@@ -37,7 +37,7 @@ export default function HomePage({ user, weatherData }) {
     <div>
       <HomePage_Navbar name={user.name} admin={user.admin}></HomePage_Navbar>
       <div className="uk-cover-container uk-margin-large-left uk-margin-large-right uk-margin-large-top">
-        <div className="uk-background-secondary uk-light uk-padding uk-panel uk-width-1-2">
+        <div className="uk-background-secondary uk-light uk-padding uk-panel uk-width-1-2 uk-border-rounded">
           <p className="uk-h2">Selamat datang, {user.name}</p>
           <div>
             <img
@@ -48,7 +48,7 @@ export default function HomePage({ user, weatherData }) {
             <span className="uk-text-mi uk-text-lead">{util.getDate()}</span>
           </div>
         </div>
-        <div className="uk-background-muted uk-padding uk-panel uk-margin-large-top">
+        <div className="uk-background-muted uk-padding uk-panel uk-margin-large-top uk-border-rounded">
           <p className="uk-h4">Rekap Hari ini</p>
           <ul class="uk-list uk-list-large uk-list-divider">
             <li className="uk-text-middle">

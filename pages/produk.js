@@ -264,7 +264,7 @@ export default function ProdukPage({ user }) {
     <div>
       <HomePage_Navbar name={user.name} admin={user.admin}></HomePage_Navbar>
       <div className="uk-cover-container uk-margin-large-left uk-margin-large-right uk-margin-large-top">
-        <div className="uk-background-secondary uk-light uk-padding uk-panel uk-width-1-2">
+        <div className="uk-background-secondary uk-light uk-padding uk-panel uk-width-1-2 uk-border-rounded">
           <p className="uk-h2">Data Produk</p>
         </div>
         <div
@@ -296,7 +296,7 @@ export default function ProdukPage({ user }) {
             />
           </div>
         </div>
-        <div className="uk-background-muted uk-padding uk-panel uk-margin-top">
+        <div className="uk-background-muted uk-padding uk-panel uk-margin-top uk-border-rounded">
           <table
             className="uk-table uk-table-middle uk-table-divider"
             id="table"
@@ -343,7 +343,7 @@ export default function ProdukPage({ user }) {
         </div>
         <div className="uk-text-center uk-margin-top">
           <button
-            className="uk-button uk-button-primary"
+            className="uk-button uk-button-primary uk-border-rounded"
             type="button"
             onClick={addHandler}
           >

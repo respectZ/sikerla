@@ -111,7 +111,7 @@ export default function HomePage_Navbar(props) {
               </a>
             </li>
             <li>
-              <a href="/logout">
+              <a href="/api/logout">
                 <span
                   className="uk-margin-small-right"
                   uk-icon="icon: sign-out"

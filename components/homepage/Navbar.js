@@ -1,6 +1,18 @@
 import NavButton from "./NavButton";
+import { useRouter } from "next/router";
+import UIkit from "uikit";
 
 export default function HomePage_Navbar(props) {
+  const router = useRouter();
+
+  function confirmExit() {
+    UIkit.modal.confirm("Apakah anda yakin ?").then(
+      function () {
+        router.push("/api/logout");
+      },
+      function () {}
+    );
+  }
   return (
     <div>
       <nav className="uk-navbar-container uk-navbar uk-navbar-transparent uk-background-muted uk-dark">
@@ -111,7 +123,7 @@ export default function HomePage_Navbar(props) {
               </a>
             </li>
             <li>
-              <a href="/api/logout">
+              <a href="#" onClick={confirmExit}>
                 <span
                   className="uk-margin-small-right"
                   uk-icon="icon: sign-out"

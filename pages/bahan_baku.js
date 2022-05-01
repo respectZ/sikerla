@@ -112,6 +112,7 @@ export default function BahanBakuPage({ user }) {
           nama: formProduk.nama,
           jumlah: formProduk.jumlah,
           waktu: formatDateToServer(formProduk.waktu),
+          user: user.id,
         },
       }),
       headers: {

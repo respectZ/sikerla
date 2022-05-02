@@ -266,7 +266,8 @@ export default function BahanBakuPage({ user }) {
   async function getRiwayat(_date) {
     let p = await fetch("api/bahan_baku/riwayat?date=" + _date);
     const res = await p.json();
-    res.data.reverse();
+    console.log(res);
+    res.data?.reverse();
     UIkit.modal(document.getElementById("modal-overflow")).show();
     setRiwayatProduk(res.data);
   }

@@ -249,7 +249,7 @@ export default function ProdukPage({ user }) {
   async function getRiwayat(_date) {
     let p = await fetch("api/produk/riwayat?date=" + _date);
     const res = await p.json();
-    res.data.reverse();
+    res.data?.reverse();
     UIkit.modal(document.getElementById("modal-overflow")).show();
     setRiwayatProduk(res.data);
   }

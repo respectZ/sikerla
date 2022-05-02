@@ -28,6 +28,7 @@ export default function ProdukPage({ user }) {
   const [_date, _setDate] = useState(util.formatDateClient(util.getDate()));
   const [produk, setProduk] = useState([]);
   const [formProduk, setFormProduk] = useState({});
+  const [riwayatProduk, setRiwayatProduk] = useState([]);
 
   useEffect(() => {
     if (!user || !user.admin) {
@@ -244,6 +245,15 @@ export default function ProdukPage({ user }) {
       );
   }
 
+  // riwayat
+  async function getRiwayat(_date) {
+    let p = await fetch("api/produk/riwayat?date=" + _date);
+    const res = await p.json();
+    res.data.reverse();
+    UIkit.modal(document.getElementById("modal-overflow")).show();
+    setRiwayatProduk(res.data);
+  }
+
   // search
   function search(value) {
     let table = document.getElementById("table");
@@ -273,10 +283,10 @@ export default function ProdukPage({ user }) {
           className="uk-margin-top uk-margin-top uk-grid uk-grid-stack"
         >
           <div className="uk-width-expand">
-            <div class="uk-inline uk-width-1-1">
-              <span class="uk-form-icon" uk-icon="icon: search"></span>
+            <div className="uk-inline uk-width-1-1">
+              <span className="uk-form-icon" uk-icon="icon: search"></span>
               <input
-                class="uk-input"
+                className="uk-input"
                 id="search"
                 name="search"
                 type="text"
@@ -285,6 +295,17 @@ export default function ProdukPage({ user }) {
                 onChange={(e) => search(e.target.value)}
               />
             </div>
+          </div>
+          <div className="uk-width-auto">
+            <button
+              className="uk-button uk-button-primary uk-border-rounded"
+              type="button"
+              onClick={(e) =>
+                getRiwayat(document.getElementById("tanggal").value)
+              }
+            >
+              Riwayat
+            </button>
           </div>
           <div className="uk-width-1-5">
             <input
@@ -441,6 +462,86 @@ export default function ProdukPage({ user }) {
               </button>
             </p>
           </form>
+        </div>
+      </div>
+      <div id="modal-overflow" uk-modal>
+        <div
+          className="uk-modal-dialog uk-modal-body uk-width-1-1"
+          uk-overflow-auto="true"
+        >
+          <h2 className="uk-modal-title">Riwayat Produk</h2>
+          <hr></hr>
+          <table
+            className="uk-table uk-table-middle uk-table-divider"
+            id="table"
+          >
+            <thead>
+              <tr>
+                <th className="uk-width-small">Aksi</th>
+                <th className="uk-width-small uk-text-danger">Nama</th>
+                <th className="uk-width-small uk-text-success">Nama</th>
+                <th className="uk-table-shrink uk-text-danger">Jumlah</th>
+                <th className="uk-table-shrink uk-text-success">Jumlah</th>
+                <th className="uk-table-medium uk-text-danger">Tanggal</th>
+                <th className="uk-table-medium uk-text-success">Tanggal</th>
+                <th className="uk-table-medium">Waktu</th>
+                <th className="uk-table-expand">User</th>
+              </tr>
+            </thead>
+            <tbody>
+              {riwayatProduk?.map((d) => {
+                return (
+                  <tr key={d.id}>
+                    <td
+                      className={
+                        d.aksi.toUpperCase() == "UPDATE"
+                          ? "uk-text-primary"
+                          : d.aksi.toUpperCase() == "TAMBAH"
+                          ? "uk-text-success"
+                          : "uk-text-danger"
+                      }
+                    >
+                      {d.aksi.toUpperCase()}
+                    </td>
+                    <td>{d.nama_lama}</td>
+                    <td>{d.nama_baru}</td>
+                    <td>{d.jumlah_lama}</td>
+                    <td>{d.jumlah_baru}</td>
+                    <td>
+                      {d.waktu_lama == null
+                        ? ""
+                        : new Date(d.waktu_lama)
+                            .toISOString()
+                            .replace("T", " ")
+                            .replace(".000Z", "")}
+                    </td>
+                    <td>
+                      {new Date(d.waktu_baru)
+                        .toISOString()
+                        .replace("T", " ")
+                        .replace(".000Z", "")}
+                    </td>
+                    <td>
+                      {new Date(d.waktu)
+                        .toISOString()
+                        .replace("T", " ")
+                        .replace(".000Z", "")}
+                    </td>
+                    <td>{d.user}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+
+          <p className="uk-text-right">
+            <button
+              className="uk-button uk-button-default uk-modal-close"
+              type="button"
+            >
+              Tutup
+            </button>
+          </p>
         </div>
       </div>
       <Head>

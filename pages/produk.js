@@ -315,6 +315,7 @@ export default function ProdukPage({ user }) {
               type="date"
               defaultValue={util.formatDateClient(util.getDate())}
               onChange={(e) => getProduk(e.target.value)}
+              max={util.formatDateClient(util.getDate())}
             />
           </div>
         </div>

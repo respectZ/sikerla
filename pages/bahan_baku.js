@@ -207,6 +207,8 @@ export default function BahanBakuPage({ user, WEATHER_API_KEY }) {
         ]);
       }
       // get max
+    } else {
+      setPrediksiKurma([]);
     }
     // calc kopi
     if (kopi > 0) {
@@ -244,6 +246,8 @@ export default function BahanBakuPage({ user, WEATHER_API_KEY }) {
               : "",
         },
       ]);
+    } else {
+      setPrediksiKopi([]);
     }
   }
 

@@ -105,14 +105,15 @@ export default function ProdukPage({ user }) {
       });
       return;
     }
-
+    let _tempWaktu = new Date(formProduk.waktu);
+    _tempWaktu.setHours(_tempWaktu.getHours() + 7);
     const res = await fetch("../api/produk/update", {
       body: JSON.stringify({
         id: formProduk.id,
         data: {
           nama: formProduk.nama,
           jumlah: formProduk.jumlah,
-          waktu: formatDateToServer(formProduk.waktu),
+          waktu: formatDateToServer(_tempWaktu.toISOString()),
           user: user.id,
         },
       }),
@@ -438,6 +439,7 @@ export default function ProdukPage({ user }) {
                       waktu: e.target.value,
                     })
                   }
+                  max={formatDateToClient(new Date())}
                 />
               </div>
             </div>
@@ -465,7 +467,7 @@ export default function ProdukPage({ user }) {
           </form>
         </div>
       </div>
-      <div id="modal-overflow" uk-modal>
+      <div id="modal-overflow" style={{ display: "none" }} uk-modal="true">
         <div
           className="uk-modal-dialog uk-modal-body uk-width-1-1"
           uk-overflow-auto="true"

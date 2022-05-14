@@ -14,13 +14,14 @@ export const getServerSideProps = withIronSessionSsr(
     return {
       props: {
         user: req.session.user ?? null,
+        WEATHER_API_KEY: process.env.WEATHER_API_KEY,
       },
     };
   },
   ironSessionConfig
 );
 
-export default function BahanBakuPage({ user }) {
+export default function BahanBakuPage({ user, WEATHER_API_KEY }) {
   const router = useRouter();
 
   const [isAdding, setIsAdding] = useState(false);
@@ -40,7 +41,10 @@ export default function BahanBakuPage({ user }) {
       let p = fetch("api/bahan_baku?date=" + _date);
       p.then((_) => _.json()).then((d) => {
         setProduk(d.data);
-        getPrediksi(d.data);
+        let weathers = getWeather();
+        weathers.then((p) => {
+          getPrediksi(d.data, p);
+        });
       });
       _setDate("");
     }
@@ -74,7 +78,58 @@ export default function BahanBakuPage({ user }) {
     return date.toISOString().split(".")[0];
   }
 
-  function getPrediksi(produk) {
+  // prediksi
+  async function getWeather() {
+    let _date = new Date(document.getElementById("tanggal").value)
+      .toISOString()
+      .split("T")[0];
+    const res = await fetch("../api/prediksi/?date=" + _date, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "GET",
+    });
+
+    const result = await res.json();
+    if (result.data.length) {
+      return eval(result.data[0].cuaca);
+    } else {
+      console.log("creating...");
+      //bikin then post
+      let weatherUrl = `http://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=1.4352134,99.1803313&days=1&aqi=no&alerts=no&dt=`;
+      if (
+        new Date(document.getElementById("tanggal").value).getDate() <
+        new Date().getDate()
+      ) {
+        return [];
+      } else {
+        let weathers = [];
+        for (let i = 0; i < 15; i++) {
+          let t = new Date();
+          t.setDate(t.getDate() + i);
+          let r = fetch(weatherUrl + t.toISOString().split("T")[0]);
+          r.then((_) => _.json()).then(async (res) => {
+            weathers.push(res.forecast.forecastday[0].day.daily_will_it_rain);
+            if (weathers.length == 15) {
+              const res = await fetch("../api/prediksi/insert", {
+                body: JSON.stringify({
+                  data: {
+                    tanggal: _date,
+                    cuaca: JSON.stringify(weathers),
+                  },
+                }),
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                method: "POST",
+              });
+            }
+          });
+        }
+      }
+    }
+  }
+  function getPrediksi(produk, weathers) {
     let salak = 0;
     let gula = 0;
     let kopi = 0;
@@ -90,17 +145,38 @@ export default function BahanBakuPage({ user }) {
     });
     // calc salak
     if (salak > 0 && gula > 0) {
-      let tempSalak,
-        tempGula = 0;
-      tempSalak = Math.round(salak / 250);
-      tempGula = Math.round(gula / 6);
+      let tempSalak = Math.round(salak / 250);
+      let tempGula = Math.round(gula / 6);
+      let kualitas;
+      if (weathers.length == 0) kualitas = "Tidak tersedia";
+      else
+        kualitas =
+          weathers.filter((x) => x == 1).length >= 10 ? "Cukup" : "Baik";
+
+      // tanggal
+      let _date;
+      if (weathers.length != 0) {
+        _date = new Date(document.getElementById("tanggal").value);
+        let _arr = [];
+        weathers.map((d) => {
+          if (d == 0) _arr.push(30 / 21);
+          else _arr.push(1);
+        });
+        _arr = Math.round(_arr.reduce((a, b) => a + b, 0));
+        _date.setDate(_date.getDate() + _arr);
+        _date.setDate(_date.getDate() + 6);
+        _date = _date.toISOString().split("T")[0];
+      } else {
+        _date = "Tidak tersedia";
+      }
       //kelebihan gula
       if (tempSalak - tempGula < 0) {
         setPrediksiKurma([
           {
             nama: "Kurma Salak",
             jumlah: tempGula,
-            kualitas: "-",
+            kualitas: kualitas,
+            tanggal: _date,
             pesan:
               "Kelebihan gula sebanyak " + (gula / 6 - salak / 250) * 6 + " gr",
           },
@@ -111,25 +187,57 @@ export default function BahanBakuPage({ user }) {
           {
             nama: "Kurma Salak",
             jumlah: tempGula,
-            kualitas: "-",
+            kualitas: kualitas,
+            tanggal: _date,
             pesan:
               "Kelebihan salak sebanyak " +
               (salak / 250 - gula / 6) * 250 +
               " gr",
           },
         ]);
+      } else {
+        setPrediksiKurma([
+          {
+            nama: "Kurma Salak",
+            jumlah: tempGula,
+            kualitas: kualitas,
+            tanggal: _date,
+            pesan: "-",
+          },
+        ]);
       }
       // get max
-    } else if (salak == 0) {
-    } else if (gula == 0) {
     }
     // calc kopi
     if (kopi > 0) {
+      let kualitas;
+      if (weathers.length == 0) kualitas = "Tidak tersedia";
+      else
+        kualitas =
+          weathers.filter((x) => x == 1).length >= 10 ? "Cukup" : "Baik";
+      // tanggal
+      let _date;
+      if (weathers.length != 0) {
+        _date = new Date(document.getElementById("tanggal").value);
+        let _arr = [];
+        weathers.map((d) => {
+          if (d == 0) _arr.push(40 / 30);
+          else _arr.push(1);
+        });
+        _arr = Math.round(_arr.reduce((a, b) => a + b, 0));
+        _date.setDate(_date.getDate() + _arr);
+        _date.setDate(_date.getDate() + 15);
+        _date = _date.toISOString().split("T")[0];
+      } else {
+        _date = "Tidak tersedia";
+      }
+
       setPrediksiKopi([
         {
           nama: "Kopi",
           jumlah: Math.round(kopi / 250),
-          kualitas: "-",
+          kualitas: kualitas,
+          tanggal: _date,
           pesan:
             kopi % 250 != 0
               ? "Kelebihan kopi sebanyak " + (kopi % 250) + " gr"
@@ -445,6 +553,7 @@ export default function BahanBakuPage({ user }) {
                 <th className="uk-width-small">Nama Produk</th>
                 <th className="uk-table-small">Prediksi Jumlah</th>
                 <th className="uk-table-small">Prediksi Kualitas</th>
+                <th className="uk-table-small">Prediksi Selesai</th>
                 <th className="uk-table-expand">Pesan</th>
               </tr>
             </thead>
@@ -455,6 +564,7 @@ export default function BahanBakuPage({ user }) {
                     <td>{d.nama}</td>
                     <td>{d.jumlah + " kotak"}</td>
                     <td>{d.kualitas}</td>
+                    <td>{d.tanggal}</td>
                     <td>{d.pesan}</td>
                   </tr>
                 );
@@ -465,6 +575,7 @@ export default function BahanBakuPage({ user }) {
                     <td>{d.nama}</td>
                     <td>{d.jumlah + " kotak"}</td>
                     <td>{d.kualitas}</td>
+                    <td>{d.tanggal}</td>
                     <td>{d.pesan}</td>
                   </tr>
                 );

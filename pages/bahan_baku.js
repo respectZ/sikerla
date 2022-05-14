@@ -29,6 +29,8 @@ export default function BahanBakuPage({ user }) {
   const [produk, setProduk] = useState([]);
   const [formProduk, setFormProduk] = useState({});
   const [riwayatProduk, setRiwayatProduk] = useState([]);
+  const [prediksiKurma, setPrediksiKurma] = useState([]);
+  const [prediksiKopi, setPrediksiKopi] = useState([]);
 
   useEffect(() => {
     if (!user || !user.admin) {
@@ -38,6 +40,7 @@ export default function BahanBakuPage({ user }) {
       let p = fetch("api/bahan_baku?date=" + _date);
       p.then((_) => _.json()).then((d) => {
         setProduk(d.data);
+        getPrediksi(d.data);
       });
       _setDate("");
     }
@@ -69,6 +72,71 @@ export default function BahanBakuPage({ user }) {
     date = new Date(date);
     date.setHours(date.getHours() + 7);
     return date.toISOString().split(".")[0];
+  }
+
+  function getPrediksi(produk) {
+    let salak = 0;
+    let gula = 0;
+    let kopi = 0;
+    if (produk?.length == 0) return;
+    produk?.forEach((element) => {
+      if (element.nama.toLowerCase() == "salak") {
+        salak += element.jumlah;
+      } else if (element.nama.toLowerCase() == "gula") {
+        gula += element.jumlah;
+      } else if (element.nama.toLowerCase() == "kopi") {
+        kopi += element.jumlah;
+      }
+    });
+    // calc salak
+    if (salak > 0 && gula > 0) {
+      let tempSalak,
+        tempGula = 0;
+      tempSalak = Math.round(salak / 250);
+      tempGula = Math.round(gula / 6);
+      //kelebihan gula
+      if (tempSalak - tempGula < 0) {
+        setPrediksiKurma([
+          {
+            nama: "Kurma Salak",
+            jumlah: tempGula,
+            kualitas: "-",
+            pesan:
+              "Kelebihan gula sebanyak " + (gula / 6 - salak / 250) * 6 + " gr",
+          },
+        ]);
+      } // kelebihan salak
+      else if (tempGula - tempSalak < 0) {
+        setPrediksiKurma([
+          {
+            nama: "Kurma Salak",
+            jumlah: tempGula,
+            kualitas: "-",
+            pesan:
+              "Kelebihan salak sebanyak " +
+              (salak / 250 - gula / 6) * 250 +
+              " gr",
+          },
+        ]);
+      }
+      // get max
+    } else if (salak == 0) {
+    } else if (gula == 0) {
+    }
+    // calc kopi
+    if (kopi > 0) {
+      setPrediksiKopi([
+        {
+          nama: "Kopi",
+          jumlah: Math.round(kopi / 250),
+          kualitas: "-",
+          pesan:
+            kopi % 250 != 0
+              ? "Kelebihan kopi sebanyak " + (kopi % 250) + " gr"
+              : "",
+        },
+      ]);
+    }
   }
 
   // form handler
@@ -105,14 +173,15 @@ export default function BahanBakuPage({ user }) {
       });
       return;
     }
-
+    let _tempWaktu = new Date(formProduk.waktu);
+    _tempWaktu.setHours(_tempWaktu.getHours() + 7);
     const res = await fetch("../api/bahan_baku/update", {
       body: JSON.stringify({
         id: formProduk.id,
         data: {
           nama: formProduk.nama,
           jumlah: formProduk.jumlah,
-          waktu: formatDateToServer(formProduk.waktu),
+          waktu: formatDateToServer(_tempWaktu.toISOString()),
           user: user.id,
         },
       }),
@@ -339,12 +408,12 @@ export default function BahanBakuPage({ user }) {
                 return (
                   <tr key={d.id}>
                     <td>{d.nama}</td>
-                    <td>{d.jumlah}</td>
+                    <td>{d.jumlah + " gr"}</td>
                     <td>{new Date(d.waktu).toTimeString().split(" ")[0]}</td>
                     <td>{d.user}</td>
                     <td>
                       <button
-                        className="uk-button uk-button-default uk-margin-small-right"
+                        className="uk-button uk-button-default uk-margin-small-right uk-icon"
                         type="button"
                         onClick={(e) => editHandler(e, d)}
                       >
@@ -365,6 +434,45 @@ export default function BahanBakuPage({ user }) {
             </tbody>
           </table>
         </div>
+
+        <div className="uk-background-muted uk-padding uk-panel uk-margin-top uk-border-rounded">
+          <table
+            className="uk-table uk-table-middle uk-table-divider"
+            id="table"
+          >
+            <thead>
+              <tr>
+                <th className="uk-width-small">Nama Produk</th>
+                <th className="uk-table-small">Prediksi Jumlah</th>
+                <th className="uk-table-small">Prediksi Kualitas</th>
+                <th className="uk-table-expand">Pesan</th>
+              </tr>
+            </thead>
+            <tbody>
+              {prediksiKurma?.map((d) => {
+                return (
+                  <tr key={d.nama}>
+                    <td>{d.nama}</td>
+                    <td>{d.jumlah + " kotak"}</td>
+                    <td>{d.kualitas}</td>
+                    <td>{d.pesan}</td>
+                  </tr>
+                );
+              })}
+              {prediksiKopi?.map((d) => {
+                return (
+                  <tr key={d.nama}>
+                    <td>{d.nama}</td>
+                    <td>{d.jumlah + " kotak"}</td>
+                    <td>{d.kualitas}</td>
+                    <td>{d.pesan}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
         <div className="uk-text-center uk-margin-top">
           <button
             className="uk-button uk-button-primary uk-border-rounded"
@@ -443,6 +551,7 @@ export default function BahanBakuPage({ user }) {
                       waktu: e.target.value,
                     })
                   }
+                  max={formatDateToClient(new Date())}
                 />
               </div>
             </div>
@@ -470,7 +579,7 @@ export default function BahanBakuPage({ user }) {
           </form>
         </div>
       </div>
-      <div id="modal-overflow" uk-modal>
+      <div id="modal-overflow" style={{ display: "none" }} uk-modal="true">
         <div
           className="uk-modal-dialog uk-modal-body uk-width-1-1"
           uk-overflow-auto="true"

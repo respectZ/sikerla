@@ -13,6 +13,7 @@ export const getServerSideProps = withIronSessionSsr(
     const res = await fetch(
       `http://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHER_API_KEY}&q=1.4352134,99.1803313&days=1&aqi=no&alerts=no`
     );
+    // date
     const weatherData = await res.json();
     return {
       props: {
@@ -26,10 +27,19 @@ export const getServerSideProps = withIronSessionSsr(
 
 export default function HomePage({ user, weatherData }) {
   const router = useRouter();
-
+  const [bahanBaku, setBahanBaku] = useState(false);
+  let initBahanBaku = false;
   useEffect(() => {
     if (!user) {
       router.push("/");
+    }
+    if (!initBahanBaku) {
+      initBahanBaku = true;
+      const _date = util.formatDateClient(util.getDate());
+      let p = fetch("api/bahan_baku?date=" + _date);
+      p.then((_) => _.json()).then((d) => {
+        if (d.data.length > 0) setBahanBaku(true);
+      });
     }
   });
 
@@ -50,21 +60,24 @@ export default function HomePage({ user, weatherData }) {
         </div>
         <div className="uk-background-muted uk-padding uk-panel uk-margin-large-top uk-border-rounded">
           <p className="uk-h4">Rekap Hari ini</p>
-          <ul class="uk-list uk-list-large uk-list-divider">
-            <li className="uk-text-middle">
-              <span
-                className="uk-icon"
-                uk-icon={`icon: close; ratio: 1`}
-              ></span>
-              Isi data bahan baku
-            </li>
-            <li className="uk-text-middle">
-              <span
-                className="uk-icon"
-                uk-icon={`icon: close; ratio: 1`}
-              ></span>
-              To do
-            </li>
+          <ul className="uk-list uk-list-large uk-list-divider">
+            {bahanBaku ? (
+              <li className="uk-text-middle uk-text-success">
+                <span
+                  className="uk-icon"
+                  uk-icon={`icon: check; ratio: 1`}
+                ></span>
+                Mengisi bahan baku
+              </li>
+            ) : (
+              <li className="uk-text-middle uk-text-danger">
+                <span
+                  className="uk-icon"
+                  uk-icon={`icon: close; ratio: 1`}
+                ></span>
+                Mengisi bahan baku
+              </li>
+            )}
           </ul>
         </div>
       </div>

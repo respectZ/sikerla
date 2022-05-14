@@ -22,7 +22,10 @@ export default function HomePage_Navbar(props) {
             href="#"
             uk-toggle="target: #offcanvas-overlay"
           >
-            <span className="uk-margin-small-right" uk-icon="icon: menu"></span>
+            <span
+              className="uk-margin-small-right uk-icon"
+              uk-icon="icon: menu"
+            ></span>
           </a>
           <a className="uk-navbar-item uk-logo" href="/homepage">
             <img
@@ -42,7 +45,7 @@ export default function HomePage_Navbar(props) {
             <li className="uk-active">
               <a href="/homepage">
                 <span
-                  className="uk-margin-small-right"
+                  className="uk-margin-small-right uk-icon"
                   uk-icon="icon: home"
                 ></span>
                 Beranda
@@ -51,7 +54,7 @@ export default function HomePage_Navbar(props) {
             <li className="uk-active">
               <a href="/perkiraan_cuaca">
                 <span
-                  className="uk-margin-small-right"
+                  className="uk-margin-small-right uk-icon"
                   uk-icon="icon: cloud-upload"
                 ></span>
                 Perkiraan Cuaca
@@ -63,7 +66,7 @@ export default function HomePage_Navbar(props) {
                 <li>
                   <a href="/bahan_baku">
                     <span
-                      className="uk-margin-small-right"
+                      className="uk-margin-small-right uk-icon"
                       uk-icon="icon: paint-bucket"
                     ></span>
                     Bahan Baku
@@ -72,7 +75,7 @@ export default function HomePage_Navbar(props) {
                 <li>
                   <a href="/produk">
                     <span
-                      className="uk-margin-small-right"
+                      className="uk-margin-small-right uk-icon"
                       uk-icon="icon: bag"
                     ></span>
                     Produk
@@ -84,7 +87,7 @@ export default function HomePage_Navbar(props) {
             <li>
               <a href="/profil/perusahaan">
                 <span
-                  className="uk-margin-small-right"
+                  className="uk-margin-small-right uk-icon"
                   uk-icon="icon: tag"
                 ></span>
                 Profil Perusahaan
@@ -94,7 +97,7 @@ export default function HomePage_Navbar(props) {
               <li>
                 <a href="/profil/pemilik">
                   <span
-                    className="uk-margin-small-right"
+                    className="uk-margin-small-right uk-icon"
                     uk-icon="icon: user"
                   ></span>
                   Akun Pemlik
@@ -106,7 +109,7 @@ export default function HomePage_Navbar(props) {
             <li>
               <a href="#">
                 <span
-                  className="uk-margin-small-right"
+                  className="uk-margin-small-right uk-icon"
                   uk-icon="icon: users"
                 ></span>
                 Akun Pekerja
@@ -116,7 +119,7 @@ export default function HomePage_Navbar(props) {
             <li>
               <a href="#">
                 <span
-                  className="uk-margin-small-right"
+                  className="uk-margin-small-right uk-icon"
                   uk-icon="icon: user"
                 ></span>
                 Akun Saya
@@ -125,7 +128,7 @@ export default function HomePage_Navbar(props) {
             <li>
               <a href="#" onClick={confirmExit}>
                 <span
-                  className="uk-margin-small-right"
+                  className="uk-margin-small-right uk-icon"
                   uk-icon="icon: sign-out"
                 ></span>
                 Keluar

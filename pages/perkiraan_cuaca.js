@@ -9,6 +9,7 @@ import util from "../lib/util";
 import { withIronSessionSsr } from "iron-session/next";
 import { ironSessionConfig } from "../next.config";
 import checkSession from "../lib/check_session";
+import checkJamKerja from "../lib/check_jam_kerja";
 
 import React from "react";
 import {
@@ -111,13 +112,19 @@ export const getServerSideProps = withIronSessionSsr(
         user: req.session.user ?? null,
         weatherData: weatherData,
         tokenValid: tokenValid,
+        isJamKerja: checkJamKerja(),
       },
     };
   },
   ironSessionConfig
 );
 
-export default function PerkiraanCuaca({ user, weatherData, tokenValid }) {
+export default function PerkiraanCuaca({
+  user,
+  weatherData,
+  tokenValid,
+  isJamKerja,
+}) {
   const router = useRouter();
   const chartData = generateChartData(weatherData);
   const chartOption = generateChartOption(weatherData);
@@ -125,6 +132,13 @@ export default function PerkiraanCuaca({ user, weatherData, tokenValid }) {
   useEffect(() => {
     if (!user) {
       router.push("/");
+    }
+    if (!isJamKerja) {
+      UIkit.modal
+        .alert("Mohon maaf sistem hanya dapat diakses pada pukul 09.00 - 17.00")
+        .then(function () {
+          router.push("/api/logout");
+        });
     }
     if (tokenValid == false) {
       UIkit.modal

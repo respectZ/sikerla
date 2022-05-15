@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { withIronSessionSsr } from "iron-session/next";
 import { ironSessionConfig } from "../next.config";
 import checkSession from "../lib/check_session";
+import checkJamKerja from "../lib/check_jam_kerja";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -19,13 +20,19 @@ export const getServerSideProps = withIronSessionSsr(
         user: req.session.user ?? null,
         WEATHER_API_KEY: process.env.WEATHER_API_KEY,
         tokenValid: tokenValid,
+        isJamKerja: checkJamKerja(),
       },
     };
   },
   ironSessionConfig
 );
 
-export default function BahanBakuPage({ user, WEATHER_API_KEY, tokenValid }) {
+export default function BahanBakuPage({
+  user,
+  WEATHER_API_KEY,
+  tokenValid,
+  isJamKerja,
+}) {
   const router = useRouter();
 
   const [isAdding, setIsAdding] = useState(false);
@@ -40,6 +47,13 @@ export default function BahanBakuPage({ user, WEATHER_API_KEY, tokenValid }) {
   useEffect(() => {
     if (!user || !user.admin) {
       router.push("/");
+    }
+    if (!isJamKerja) {
+      UIkit.modal
+        .alert("Mohon maaf sistem hanya dapat diakses pada pukul 09.00 - 17.00")
+        .then(function () {
+          router.push("/api/logout");
+        });
     }
     if (tokenValid == false) {
       UIkit.modal

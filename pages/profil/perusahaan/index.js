@@ -12,6 +12,7 @@ import useSWR from "swr";
 import { withIronSessionSsr } from "iron-session/next";
 import { ironSessionConfig } from "../../../next.config";
 import checkSession from "../../../lib/check_session";
+import checkJamKerja from "../../../lib/check_jam_kerja";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -21,13 +22,14 @@ export const getServerSideProps = withIronSessionSsr(
       props: {
         user: req.session.user ?? null,
         tokenValid: tokenValid,
+        isJamKerja: checkJamKerja(),
       },
     };
   },
   ironSessionConfig
 );
 
-export default function ProfilPerusahaan({ user, tokenValid }) {
+export default function ProfilPerusahaan({ user, tokenValid, isJamKerja }) {
   const fetcher = (url) => fetch(url).then((res) => res.json());
   const [isAuthorized, setAuthorized] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -37,6 +39,13 @@ export default function ProfilPerusahaan({ user, tokenValid }) {
 
   useEffect(() => {
     if (user) setAuthorized(true);
+    if (!isJamKerja) {
+      UIkit.modal
+        .alert("Mohon maaf sistem hanya dapat diakses pada pukul 09.00 - 17.00")
+        .then(function () {
+          router.push("/api/logout");
+        });
+    }
     if (tokenValid == false) {
       UIkit.modal
         .alert("Anda akan logout karena terdapat device lain.")

@@ -11,19 +11,23 @@ import useSWR from "swr";
 
 import { withIronSessionSsr } from "iron-session/next";
 import { ironSessionConfig } from "../../../next.config";
+import checkSession from "../../../lib/check_session";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
+    let tokenValid = null;
+    tokenValid = await checkSession(req.session.user);
     return {
       props: {
         user: req.session.user ?? null,
+        tokenValid: tokenValid,
       },
     };
   },
   ironSessionConfig
 );
 
-export default function ProfilPerusahaan({ user }) {
+export default function ProfilPerusahaan({ user, tokenValid }) {
   const fetcher = (url) => fetch(url).then((res) => res.json());
   const [isAuthorized, setAuthorized] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -33,6 +37,13 @@ export default function ProfilPerusahaan({ user }) {
 
   useEffect(() => {
     if (user) setAuthorized(true);
+    if (tokenValid == false) {
+      UIkit.modal
+        .alert("Anda akan logout karena terdapat device lain.")
+        .then(function () {
+          router.push("/api/logout");
+        });
+    }
 
     if (perusahaan == undefined) return;
     if (!Object.keys(perusahaan).length) {

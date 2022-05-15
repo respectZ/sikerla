@@ -8,6 +8,9 @@ import { useRouter } from "next/router";
 import { withIronSessionSsr } from "iron-session/next";
 import { ironSessionConfig } from "../next.config";
 
+import checkSession from "../lib/check_session";
+import UIkit from "uikit";
+
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
     const res = await fetch(
@@ -15,23 +18,33 @@ export const getServerSideProps = withIronSessionSsr(
     );
     // date
     const weatherData = await res.json();
+    let tokenValid = null;
+    tokenValid = await checkSession(req.session.user);
     return {
       props: {
         user: req.session.user ?? null,
         weatherData: weatherData,
+        tokenValid: tokenValid,
       },
     };
   },
   ironSessionConfig
 );
 
-export default function HomePage({ user, weatherData }) {
+export default function HomePage({ user, weatherData, tokenValid }) {
   const router = useRouter();
   const [bahanBaku, setBahanBaku] = useState(false);
   let initBahanBaku = false;
   useEffect(() => {
     if (!user) {
       router.push("/");
+    }
+    if (tokenValid == false) {
+      UIkit.modal
+        .alert("Anda akan logout karena terdapat device lain.")
+        .then(function () {
+          router.push("/api/logout");
+        });
     }
     if (!initBahanBaku) {
       initBahanBaku = true;

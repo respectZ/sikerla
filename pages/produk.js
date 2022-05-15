@@ -8,19 +8,23 @@ import { useRouter } from "next/router";
 
 import { withIronSessionSsr } from "iron-session/next";
 import { ironSessionConfig } from "../next.config";
+import checkSession from "../lib/check_session";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
+    let tokenValid = null;
+    tokenValid = await checkSession(req.session.user);
     return {
       props: {
         user: req.session.user ?? null,
+        tokenValid: tokenValid,
       },
     };
   },
   ironSessionConfig
 );
 
-export default function ProdukPage({ user }) {
+export default function ProdukPage({ user, tokenValid }) {
   const router = useRouter();
 
   const [isAdding, setIsAdding] = useState(false);
@@ -33,6 +37,13 @@ export default function ProdukPage({ user }) {
   useEffect(() => {
     if (!user || !user.admin) {
       router.push("/");
+    }
+    if (tokenValid == false) {
+      UIkit.modal
+        .alert("Anda akan logout karena terdapat device lain.")
+        .then(function () {
+          router.push("/api/logout");
+        });
     }
     if (_date) {
       let p = fetch("api/produk?date=" + _date);

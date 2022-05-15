@@ -8,6 +8,7 @@ import util from "../lib/util";
 
 import { withIronSessionSsr } from "iron-session/next";
 import { ironSessionConfig } from "../next.config";
+import checkSession from "../lib/check_session";
 
 import React from "react";
 import {
@@ -103,17 +104,20 @@ export const getServerSideProps = withIronSessionSsr(
       `http://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHER_API_KEY}&q=1.4352134,99.1803313&days=1&aqi=no&alerts=no`
     );
     const weatherData = await res.json();
+    let tokenValid = null;
+    tokenValid = await checkSession(req.session.user);
     return {
       props: {
         user: req.session.user ?? null,
         weatherData: weatherData,
+        tokenValid: tokenValid,
       },
     };
   },
   ironSessionConfig
 );
 
-export default function PerkiraanCuaca({ user, weatherData }) {
+export default function PerkiraanCuaca({ user, weatherData, tokenValid }) {
   const router = useRouter();
   const chartData = generateChartData(weatherData);
   const chartOption = generateChartOption(weatherData);
@@ -121,6 +125,13 @@ export default function PerkiraanCuaca({ user, weatherData }) {
   useEffect(() => {
     if (!user) {
       router.push("/");
+    }
+    if (tokenValid == false) {
+      UIkit.modal
+        .alert("Anda akan logout karena terdapat device lain.")
+        .then(function () {
+          router.push("/api/logout");
+        });
     }
   });
 

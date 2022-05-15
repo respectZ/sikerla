@@ -25,6 +25,8 @@ function loginRoute(req, res) {
             id: _res[0]["id_user"],
             admin: _res[0]["role"].toLowerCase() == "pemilik" ? true : false,
             name: _res[0]["nama"],
+            nomor_hp: _res[0]["nomor_hp"],
+            token: _res[0]["token"],
           };
           await req.session.save();
           res

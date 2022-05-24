@@ -45,7 +45,7 @@ export default function BahanBakuPage({
   const [prediksiKopi, setPrediksiKopi] = useState([]);
 
   useEffect(() => {
-    if (!user || !user.admin) {
+    if (!user) {
       router.push("/");
     }
     if (!isJamKerja) {

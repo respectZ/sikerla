@@ -6,8 +6,7 @@ import { ironSessionConfig } from "../../../next.config";
 export default withIronSessionApiRoute(accountRoute, ironSessionConfig);
 
 function accountRoute(req, res) {
-  if (!req.session.user || !req.session.user.admin)
-    res.status(404).send("Not found.");
+  if (!req.session.user) res.status(404).send("Not found.");
   if (req.method != "GET") {
     res.status(405).json({ error: true, message: "Only GET.", data: [] });
     return;

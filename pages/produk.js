@@ -37,7 +37,7 @@ export default function ProdukPage({ user, tokenValid, isJamKerja }) {
   const [riwayatProduk, setRiwayatProduk] = useState([]);
 
   useEffect(() => {
-    if (!user || !user.admin) {
+    if (!user) {
       router.push("/");
     }
     if (!isJamKerja) {

@@ -107,7 +107,7 @@ export default function HomePage_Navbar(props) {
               <></>
             )}
             <li>
-              <a href="#">
+              <a href="/pekerja">
                 <span
                   className="uk-margin-small-right uk-icon"
                   uk-icon="icon: users"
@@ -116,7 +116,7 @@ export default function HomePage_Navbar(props) {
               </a>
             </li>
             <li className="uk-nav-divider"></li>
-            <li>
+            {/* <li>
               <a href="#">
                 <span
                   className="uk-margin-small-right uk-icon"
@@ -124,7 +124,7 @@ export default function HomePage_Navbar(props) {
                 ></span>
                 Akun Saya
               </a>
-            </li>
+            </li> */}
             <li>
               <a href="#" onClick={confirmExit}>
                 <span

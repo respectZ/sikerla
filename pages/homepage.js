@@ -41,7 +41,8 @@ export default function HomePage({
 }) {
   const router = useRouter();
   const [bahanBaku, setBahanBaku] = useState(false);
-  let initBahanBaku = false;
+  const [prediksi, setPrediksi] = useState([]);
+  const [isInit, setIsInit] = useState(false);
   useEffect(() => {
     if (!user) {
       router.push("/");
@@ -60,13 +61,18 @@ export default function HomePage({
           router.push("/api/logout");
         });
     }
-    if (!initBahanBaku) {
-      initBahanBaku = true;
+    async function init() {
       const _date = util.formatDateClient(util.getDate());
-      let p = fetch("api/bahan_baku?date=" + _date);
-      p.then((_) => _.json()).then((d) => {
-        if (d.data.length > 0) setBahanBaku(true);
-      });
+      const bahan_baku = await fetch("api/bahan_baku?date=" + _date);
+      if (bahan_baku.length > 0) setBahanBaku(true);
+      const hasilPrediksi = await (
+        await fetch("api/prediksi?date=" + _date)
+      ).json();
+      setPrediksi(hasilPrediksi.data);
+    }
+    if (!isInit) {
+      setIsInit(true);
+      init();
     }
   });
 
@@ -105,6 +111,19 @@ export default function HomePage({
                 Mengisi bahan baku
               </li>
             )}
+            {prediksi?.map((_prediksi) => {
+              return (
+                <li className="uk-text-middle uk-text-success">
+                  <span
+                    className="uk-icon"
+                    uk-icon={`icon: check; ratio: 1`}
+                  ></span>
+                  Penjemuran {_prediksi.nama} sebanyak {_prediksi.jumlah} kotak
+                  bisa diselesaikan. (Dijemur pada{" "}
+                  {_prediksi.tanggal_mulai.split("T")[0]})
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>

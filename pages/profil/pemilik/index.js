@@ -27,13 +27,11 @@ export const getServerSideProps = withIronSessionSsr(
   ironSessionConfig
 );
 
-export default function ProfilPemilik({ user, tokenValid }) {
+export default function ProfilPemilik({ user, tokenValid, isJamKerja }) {
   const router = useRouter();
-  const fetcher = (url) => fetch(url).then((res) => res.json());
   const [owner, setOwner] = useState({});
   const [isEditing, setIsEditing] = useState(false);
-  let { data: data } = useSWR("../api/account", fetcher);
-  data = data?.data;
+  const [init, setInit] = useState(false);
   useEffect(() => {
     if (!user || !user.admin) {
       router.push("/");
@@ -53,15 +51,85 @@ export default function ProfilPemilik({ user, tokenValid }) {
         });
     }
 
-    if (!Object.keys(owner).length)
-      data?.forEach((element) => {
-        if (element.role == "Pemilik") {
-          setOwner(element);
-          console.log(element);
-          return;
-        }
-      });
+    async function _getDataAkun() {
+      v_home.showDataAkun(await m_users.getDataAkun());
+    }
+
+    if (!init) {
+      _getDataAkun();
+      setInit(true);
+    }
   });
+
+  const v_home = {
+    showDataAkun: (dataAkun) => {
+      setOwner(dataAkun);
+    },
+    showPopUp: (message) => {
+      UIkit.modal.alert(message);
+    },
+    setFormDataAkun: () => {
+      setIsEditing(false);
+    },
+  };
+
+  const c_home = {
+    ProfilPemilik: () => {},
+    EditProfil: (event) => {
+      event.preventDefault();
+      setIsEditing(true);
+    },
+    Batal: (event) => {
+      event.preventDefault();
+      setIsEditing(false);
+      setInit(false);
+    },
+    OK: (event) => {
+      event.preventDefault();
+      if (c_home.DataAkunNull()) return;
+      m_users.setDataAkun();
+      v_home.setFormDataAkun();
+    },
+    DataAkunNull: () => {
+      if (
+        !util.validateEmail(owner.email) ||
+        util.isEmptyOrSpaces(owner.nama) ||
+        util.isEmptyOrSpaces(owner.email) ||
+        util.isEmptyOrSpaces(owner.nomor_hp) ||
+        util.isEmptyOrSpaces(owner.alamat)
+      ) {
+        v_home.showPopUp("Data anda belum lengkap. Harap isi kembali.");
+        return true;
+      }
+      if (!util.isNumeric(owner.nomor_hp)) {
+        v_home.showPopUp("Nomor HP tidak valid.");
+        return true;
+      }
+      return false;
+    },
+  };
+
+  const m_users = {
+    getDataAkun: async () => {
+      const data = await (
+        await (await fetch("../api/account")).json()
+      ).data.filter((element) => element.role == "Pemilik");
+      return data[0];
+    },
+    setDataAkun: async () => {
+      const res = await fetch("../api/account/update", {
+        body: JSON.stringify({
+          id: owner.id_user,
+          data: owner,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      });
+      return await res.json();
+    },
+  };
 
   function inputNumberOnly(event) {
     event.target.value = event.target.value
@@ -69,15 +137,6 @@ export default function ProfilPemilik({ user, tokenValid }) {
       .replace(/(\..*?)\..*/g, "$1");
   }
 
-  function editHandler(event) {
-    event.preventDefault();
-    setIsEditing(true);
-  }
-  function batal(event) {
-    event.preventDefault();
-    setIsEditing(false);
-    setOwner({});
-  }
   async function simpan(event) {
     setIsEditing(false);
     event.preventDefault();
@@ -151,7 +210,7 @@ export default function ProfilPemilik({ user, tokenValid }) {
           <p className="uk-h2">Profil Pemilik</p>
         </div>
         <div className="uk-background-muted uk-padding uk-panel uk-margin-large-top uk-border-rounded">
-          <form className="uk-form-stacked" onSubmit={simpan}>
+          <form className="uk-form-stacked" onSubmit={c_home.OK}>
             <div className="uk-margin">
               <label className="uk-form-label" htmlFor="nama">
                 Nama
@@ -220,6 +279,9 @@ export default function ProfilPemilik({ user, tokenValid }) {
                   type="password"
                   disabled={!isEditing}
                   placeholder="Biarkan kosong bila tidak mengganti password."
+                  onChange={(e) =>
+                    setOwner({ ...owner, password: util.hash(e.target.value) })
+                  }
                 />
               </div>
             </div>
@@ -246,14 +308,17 @@ export default function ProfilPemilik({ user, tokenValid }) {
               <div className="uk-text-right">
                 <button
                   className="uk-button uk-button-primary uk-border-rounded"
-                  onClick={editHandler}
+                  onClick={c_home.EditProfil}
                 >
                   Edit Profil
                 </button>
               </div>
             ) : (
               <div className="uk-text-right">
-                <button className="uk-button uk-button-danger" onClick={batal}>
+                <button
+                  className="uk-button uk-button-danger"
+                  onClick={c_home.Batal}
+                >
                   Batal
                 </button>
                 <button className="uk-button uk-button-primary">Simpan</button>
